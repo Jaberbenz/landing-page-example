@@ -1,5 +1,5 @@
 pipeline {
-  agent { label 'wsl' }
+  agent any
   environment {
     ALWAYS_HOST = 'ssh-jaber.alwaysdata.net'
     ALWAYS_PATH = '~/www'
