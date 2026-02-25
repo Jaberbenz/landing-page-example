@@ -1,9 +1,9 @@
 pipeline {
   agent any
   environment {
-    ALWAYS_HOST = 'ssh-jaber.alwaysdata.net'
-    ALWAYS_PATH = '~/www'
-    SSH_CRED_ID = 'alwaysdata-ssh'
+    DOCKER_IMAGE = 'jaber3012999/landing-page:latest'
+    CONTAINER_NAME = 'landing-page'
+    PORT = '80'
   }
 
   stages {
@@ -24,28 +24,22 @@ pipeline {
       }
     }
 
-    stage('CD - Deploy to AlwaysData (SCP)') {
+    stage('CD - Deploy Docker') {
       steps {
-        withCredentials([sshUserPrivateKey(
-          credentialsId: "${SSH_CRED_ID}",
-          keyFileVariable: 'SSH_KEY',
-          usernameVariable: 'SSH_USER'
-        )]) {
-          sh(label: 'Deploy via SSH/SCP (bash)', script: '''#!/usr/bin/env bash
-            set -euo pipefail
-
-            mkdir -p ~/.ssh
-            chmod 700 ~/.ssh
-            ssh-keyscan -H "$ALWAYS_HOST" >> ~/.ssh/known_hosts
-
-            SSH_OPTS="-o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -i $SSH_KEY"
-
-            ssh-keygen -y -f "$SSH_KEY" >/dev/null
-
-            ssh $SSH_OPTS "$SSH_USER@$ALWAYS_HOST" "mkdir -p $ALWAYS_PATH"
-            scp $SSH_OPTS -p index.html "$SSH_USER@$ALWAYS_HOST:$ALWAYS_PATH/"
-          ''')
-        }
+        sh '''
+          # Arrête et supprime le conteneur existant
+          docker stop ${CONTAINER_NAME} || true
+          docker rm ${CONTAINER_NAME} || true
+          
+          # Pull l'image depuis Docker Hub
+          docker pull ${DOCKER_IMAGE}
+          
+          # Lance le conteneur
+          docker run -d --name ${CONTAINER_NAME} -p ${PORT}:80 ${DOCKER_IMAGE}
+          
+          # Affiche les logs
+          docker logs ${CONTAINER_NAME}
+        '''
       }
     }
   }
