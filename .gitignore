@@ -1,0 +1,48 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+terraform.tfstate
+terraform.tfstate.backup
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Credentials & Secrets
+credentials.csv
+terraform-user_credentials.csv
+.env
+.env.local
+*.pem
+*.key
+*.pub
+.ssh/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+
+# Node (si jamais)
+node_modules/
+package-lock.json
+yarn.lock
+dist/
+build/
+
+# OS
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Jenkins (local)
+jenkins_home/
+.jenkins/
+terraform/
