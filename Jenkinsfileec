@@ -29,20 +29,25 @@ pipeline {
 
     stage('CD - Deploy Docker') {
       steps {
-        sh '''
-          # Arrête et supprime le conteneur existant
-          docker stop ${CONTAINER_NAME} || true
-          docker rm ${CONTAINER_NAME} || true
-          
-          # Pull l'image depuis Docker Hub
-          docker pull ${DOCKER_IMAGE}
-          
-          # Lance le conteneur
-          docker run -d --name ${CONTAINER_NAME} -p ${PORT}:80 ${DOCKER_IMAGE}
-          
-          # Affiche les logs
-          docker logs ${CONTAINER_NAME}
-        '''
+        withCredentials([usernamePassword(credentialsId: 'docker-hub-login-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+          sh '''
+            # Docker login
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
+            # Arrête et supprime le conteneur existant
+            docker stop ${CONTAINER_NAME} || true
+            docker rm ${CONTAINER_NAME} || true
+
+            # Pull l'image depuis Docker Hub
+            docker pull ${DOCKER_IMAGE}
+
+            # Lance le conteneur
+            docker run -d --name ${CONTAINER_NAME} -p ${PORT}:80 ${DOCKER_IMAGE}
+
+            # Affiche les logs
+            docker logs ${CONTAINER_NAME}
+          '''
+        }
       }
     }
   }
