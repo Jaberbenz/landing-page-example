@@ -4,7 +4,7 @@ pipeline {
     skipDefaultCheckout(true)
   }
   environment {
-    DOCKER_IMAGE = 'jaber3012999/landing-page:latest'
+    DOCKER_IMAGE = 'jaber301299/landing-page:latest'
     CONTAINER_NAME = 'landing-page'
     PORT = '80'
   }
