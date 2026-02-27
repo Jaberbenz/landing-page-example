@@ -29,7 +29,7 @@ pipeline {
 
     stage('CD - Deploy Docker') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'docker-hub-login-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+        withCredentials([usernamePassword(credentialsId: 'docker-hub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
           sh '''
             # Docker login
             echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
