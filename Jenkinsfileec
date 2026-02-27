@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  options {
+    skipDefaultCheckout(true)
+  }
   environment {
     DOCKER_IMAGE = 'jaber3012999/landing-page:latest'
     CONTAINER_NAME = 'landing-page'
